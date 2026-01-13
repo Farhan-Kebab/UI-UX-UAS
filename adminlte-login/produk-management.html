@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Produk - AdminLTE Dapur Roti</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/adminlte-custom.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
+            min-height: 100vh;
+            position: fixed;
+            width: 250px;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .navbar-custom {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(17, 153, 142, 0.1);
+            color: #11998e;
+        }
+
+        .badge-low-stock {
+            background: rgba(249, 59, 29, 0.1);
+            color: #f93b1d;
+        }
+
+        .modal-custom {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-custom.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content-custom {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <h5 style="margin: 0; font-weight: 700;">🥖 AdminLTE</h5>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Dapur Roti Panel</p>
+        </div>
+        <ul style="list-style: none; padding: 15px 0; margin: 0;">
+            <li style="margin: 5px 0;">
+                <a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-speedometer2" style="margin-right: 10px;"></i> Dashboard
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="produk-management.html" style="color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 20px; background: rgba(102, 126, 234, 0.2); border-left: 3px solid #667eea; transition: all 0.3s;">
+                    <i class="bi bi-box" style="margin-right: 10px;"></i> Kelola Produk
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="order-management.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-clipboard-check" style="margin-right: 10px;"></i> Kelola Pesanan
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="customer-management.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-people" style="margin-right: 10px;"></i> Kelola Pelanggan
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar-custom d-flex justify-content-between align-items-center">
+            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">📦 Kelola Produk</h2>
+            <button id="logoutBtn" onclick="logout()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Logout
+            </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="openAddProductModal()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                <i class="bi bi-plus-circle"></i> Tambah Produk
+            </button>
+            <button onclick="exportProductsToCSV()" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                <i class="bi bi-download"></i> Export CSV
+            </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            <!-- Products will load here -->
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="modal-custom">
+        <div class="modal-content-custom">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="modalTitle" style="margin: 0; color: #2c3e50; font-weight: 600;">Tambah Produk Baru</h3>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">×</button>
+            </div>
+
+            <form id="productForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Nama Produk</label>
+                    <input id="productName" type="text" placeholder="Nama produk" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Kategori</label>
+                        <select id="productCategory" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                            <option value="">Pilih kategori</option>
+                            <option value="roti">Roti</option>
+                            <option value="pastry">Pastry</option>
+                            <option value="spesial">Spesial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Harga (Rp)</label>
+                        <input id="productPrice" type="number" placeholder="Harga" required min="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Stok</label>
+                        <input id="productStock" type="number" placeholder="Stok" required min="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Status</label>
+                        <select id="productStatus" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;">
+                            <option value="active">Aktif</option>
+                            <option value="inactive">Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50;">Deskripsi</label>
+                    <textarea id="productDescription" placeholder="Deskripsi produk" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; min-height: 80px;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Simpan Produk
+                    </button>
+                    <button type="button" onclick="closeModal()" style="flex: 1; background: #e9ecef; color: #2c3e50; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dapur-roti-data.js"></script>
+    <script>
+        let editingProductId = null;
+        let currentProducts = [];
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            const user = sessionStorage.getItem('loggedInUser');
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+            loadProducts();
+        });
+
+        // Load and display products
+        function loadProducts() {
+            currentProducts = dapur_roti_products;
+            renderProducts(currentProducts);
+        }
+
+        // Render products grid
+        function renderProducts(products) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            if (products.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">Tidak ada produk</div>';
+                return;
+            }
+
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200?text=Produk'">
+                    <div style="padding: 15px;">
+                        <h5 style="margin: 0 0 8px 0; color: #2c3e50; font-weight: 600;">${product.name}</h5>
+                        <p style="margin: 0 0 8px 0; color: #999; font-size: 13px;">📁 ${product.category}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 14px; color: #667eea; font-weight: 700;">Rp ${product.price.toLocaleString('id-ID')}</span>
+                            <span class="badge-status ${product.status === 'active' ? 'badge-active' : 'badge-low-stock'}">${product.status === 'active' ? 'Aktif' : 'Nonaktif'}</span>
+                        </div>
+                        <p style="margin: 0 0 12px 0; color: #999; font-size: 13px;">Stok: <strong>${product.stock}</strong> ${product.stock <= 15 ? '⚠️' : ''}</p>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="editProduct(${product.id})" style="flex: 1; background: #667eea; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">Edit</button>
+                            <button onclick="deleteProduct(${product.id})" style="flex: 1; background: #ee0979; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">Hapus</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Open add product modal
+        function openAddProductModal() {
+            editingProductId = null;
+            document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
+            document.getElementById('productForm').reset();
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        // Edit product
+        function editProduct(id) {
+            editingProductId = id;
+            const product = dapur_roti_products.find(p => p.id === id);
+            
+            document.getElementById('modalTitle').textContent = 'Edit Produk';
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('productStatus').value = product.status;
+            document.getElementById('productDescription').value = product.description;
+            
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        // Delete product
+        function deleteProduct(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                const result = window.deleteProduct(id);
+                if (result) {
+                    loadProducts();
+                    alert('Produk berhasil dihapus!');
+                }
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('show');
+            editingProductId = null;
+        }
+
+        // Handle form submission
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const productData = {
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                price: parseInt(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                status: document.getElementById('productStatus').value,
+                description: document.getElementById('productDescription').value,
+                image: 'https://via.placeholder.com/300x200?text=Produk'
+            };
+
+            if (editingProductId) {
+                // Update product
+                window.updateProduct(editingProductId, productData);
+                alert('Produk berhasil diupdate!');
+            } else {
+                // Add new product
+                window.addNewProduct(productData);
+                alert('Produk berhasil ditambahkan!');
+            }
+
+            closeModal();
+            loadProducts();
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

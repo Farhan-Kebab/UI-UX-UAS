@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Pesanan - AdminLTE Dapur Roti</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/adminlte-custom.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
+            min-height: 100vh;
+            position: fixed;
+            width: 250px;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .navbar-custom {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 20px;
+        }
+
+        .order-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: rgba(249, 59, 29, 0.1);
+            color: #f93b1d;
+        }
+
+        .badge-processing {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .badge-completed {
+            background: rgba(17, 153, 142, 0.1);
+            color: #11998e;
+        }
+
+        .modal-custom {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-custom.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content-custom {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+                z-index: 1001;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .order-table {
+                overflow-x: auto;
+            }
+
+            .filter-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <h5 style="margin: 0; font-weight: 700;">🥖 AdminLTE</h5>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Dapur Roti Panel</p>
+        </div>
+        <ul style="list-style: none; padding: 15px 0; margin: 0;">
+            <li style="margin: 5px 0;">
+                <a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-speedometer2" style="margin-right: 10px;"></i> Dashboard
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="produk-management.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-box" style="margin-right: 10px;"></i> Kelola Produk
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="order-management.html" style="color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 20px; background: rgba(102, 126, 234, 0.2); border-left: 3px solid #667eea; transition: all 0.3s;">
+                    <i class="bi bi-clipboard-check" style="margin-right: 10px;"></i> Kelola Pesanan
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="customer-management.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-people" style="margin-right: 10px;"></i> Kelola Pelanggan
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar-custom d-flex justify-content-between align-items-center">
+            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">📋 Kelola Pesanan</h2>
+            <button id="logoutBtn" onclick="logout()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Logout
+            </button>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="filter-btn active" onclick="filterOrders('semua')">Semua (4)</button>
+            <button class="filter-btn" onclick="filterOrders('pending')">Menunggu (2)</button>
+            <button class="filter-btn" onclick="filterOrders('processing')">Diproses (1)</button>
+            <button class="filter-btn" onclick="filterOrders('completed')">Selesai (1)</button>
+            <button onclick="exportOrdersToCSV()" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: auto;">
+                <i class="bi bi-download"></i> Export CSV
+            </button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="order-table">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f9f9f9; border-bottom: 2px solid #e0e0e0;">
+                        <th style="padding: 15px; text-align: left; font-weight: 600; color: #2c3e50;">ID Pesanan</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 600; color: #2c3e50;">Pelanggan</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 600; color: #2c3e50;">Total</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 600; color: #2c3e50;">Status</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 600; color: #2c3e50;">Tanggal</th>
+                        <th style="padding: 15px; text-align: center; font-weight: 600; color: #2c3e50;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-tbody">
+                    <!-- Orders will load here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderModal" class="modal-custom">
+        <div class="modal-content-custom">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="orderModalTitle" style="margin: 0; color: #2c3e50; font-weight: 600;">Detail Pesanan</h3>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">×</button>
+            </div>
+
+            <div id="orderModalContent" style="max-height: 500px; overflow-y: auto;">
+                <!-- Order details will load here -->
+            </div>
+
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button onclick="printOrder()" style="flex: 1; background: #667eea; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    <i class="bi bi-printer"></i> Cetak
+                </button>
+                <button onclick="closeModal()" style="flex: 1; background: #e9ecef; color: #2c3e50; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dapur-roti-data.js"></script>
+    <script>
+        let currentFilter = 'semua';
+        let selectedOrder = null;
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            const user = sessionStorage.getItem('loggedInUser');
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+            
+            // Initialize data first
+            if (typeof initializeDapurRotiData === 'function') {
+                initializeDapurRotiData();
+            }
+            
+            loadOrders();
+        });
+
+        // Load and display orders
+        function loadOrders() {
+            try {
+                if (typeof dapur_roti_orders !== 'undefined') {
+                    renderOrders(dapur_roti_orders);
+                } else {
+                    console.error('Order data not available');
+                    document.getElementById('orders-tbody').innerHTML = '<tr><td colspan="6" style="padding: 40px; text-align: center; color: #999;">Data pesanan tidak tersedia</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        // Filter orders
+        function filterOrders(status) {
+            currentFilter = status;
+            
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter and render
+            let filtered = dapur_roti_orders;
+            if (status !== 'semua') {
+                filtered = dapur_roti_orders.filter(o => o.status === status);
+            }
+            renderOrders(filtered);
+        }
+
+        // Render orders in table
+        function renderOrders(orders) {
+            const tbody = document.getElementById('orders-tbody');
+            tbody.innerHTML = '';
+
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 40px; text-align: center; color: #999;">Tidak ada pesanan</td></tr>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const statusClass = `badge-${order.status}`;
+                const statusText = {
+                    'pending': 'Menunggu',
+                    'processing': 'Diproses',
+                    'completed': 'Selesai'
+                }[order.status];
+
+                const row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #e0e0e0';
+                row.innerHTML = `
+                    <td style="padding: 15px; color: #2c3e50; font-weight: 600;">${order.id}</td>
+                    <td style="padding: 15px;">
+                        <div style="color: #2c3e50; font-weight: 600;">${order.customer}</div>
+                        <div style="color: #999; font-size: 12px;">${order.email}</div>
+                    </td>
+                    <td style="padding: 15px; color: #667eea; font-weight: 700;">Rp ${order.totalAmount.toLocaleString('id-ID')}</td>
+                    <td style="padding: 15px;">
+                        <span class="badge-status ${statusClass}">${statusText}</span>
+                    </td>
+                    <td style="padding: 15px; color: #999;">
+                        ${new Date(order.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </td>
+                    <td style="padding: 15px; text-align: center;">
+                        <button onclick="viewOrder('${order.id}')" style="background: #667eea; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-right: 5px;">
+                            Lihat
+                        </button>
+                        <button onclick="changeStatus('${order.id}')" style="background: #11998e; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                            Ubah Status
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // View order details
+        function viewOrder(orderId) {
+            const order = dapur_roti_orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            selectedOrder = order;
+            document.getElementById('orderModalTitle').textContent = `Detail Pesanan ${order.id}`;
+
+            let itemsHtml = order.items.map(item => `
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
+                    <div>
+                        <div style="font-weight: 600; color: #2c3e50;">${item.name}</div>
+                        <div style="color: #999; font-size: 13px;">x${item.quantity}</div>
+                    </div>
+                    <div style="font-weight: 600; color: #667eea;">Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</div>
+                </div>
+            `).join('');
+
+            const statusClass = `badge-${order.status}`;
+            const statusText = {
+                'pending': 'Menunggu',
+                'processing': 'Diproses',
+                'completed': 'Selesai'
+            }[order.status];
+
+            document.getElementById('orderModalContent').innerHTML = `
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <div style="color: #999; font-size: 12px; margin-bottom: 5px;">ID Pesanan</div>
+                            <div style="color: #2c3e50; font-weight: 600;">${order.id}</div>
+                        </div>
+                        <div>
+                            <div style="color: #999; font-size: 12px; margin-bottom: 5px;">Status</div>
+                            <span class="badge-status badge-${order.status}">${statusText}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h5 style="color: #2c3e50; font-weight: 600; margin-bottom: 10px;">Informasi Pelanggan</h5>
+                    <div style="color: #2c3e50; margin-bottom: 5px;"><strong>${order.customer}</strong></div>
+                    <div style="color: #999; font-size: 13px; margin-bottom: 5px;">📧 ${order.email}</div>
+                    <div style="color: #999; font-size: 13px; margin-bottom: 5px;">📱 ${order.phone}</div>
+                    <div style="color: #999; font-size: 13px;">📍 ${order.address}</div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h5 style="color: #2c3e50; font-weight: 600; margin-bottom: 10px;">Item Pesanan</h5>
+                    ${itemsHtml}
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #2c3e50; font-weight: 600;">Total Pesanan</span>
+                        <span style="color: #667eea; font-size: 20px; font-weight: 700;">Rp ${order.totalAmount.toLocaleString('id-ID')}</span>
+                    </div>
+                </div>
+
+                ${order.notes ? `<div style="color: #999; font-size: 13px;"><strong>Catatan:</strong> ${order.notes}</div>` : ''}
+            `;
+
+            document.getElementById('orderModal').classList.add('show');
+        }
+
+        // Change order status
+        function changeStatus(orderId) {
+            const newStatus = prompt('Ubah status ke (pending/processing/completed):', '');
+            if (newStatus && ['pending', 'processing', 'completed'].includes(newStatus)) {
+                const result = window.updateOrderStatus(orderId, newStatus);
+                if (result) {
+                    alert('Status pesanan berhasil diubah!');
+                    loadOrders();
+                }
+            }
+        }
+
+        // Print order
+        function printOrder() {
+            if (!selectedOrder) return;
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Pesanan ${selectedOrder.id}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h2 { margin-bottom: 20px; }
+                        .details { margin-bottom: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        td { padding: 10px; border-bottom: 1px solid #ddd; }
+                        .total { font-size: 18px; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Pesanan ${selectedOrder.id}</h2>
+                    <div class="details">
+                        <p><strong>Pelanggan:</strong> ${selectedOrder.customer}</p>
+                        <p><strong>Email:</strong> ${selectedOrder.email}</p>
+                        <p><strong>Telepon:</strong> ${selectedOrder.phone}</p>
+                        <p><strong>Alamat:</strong> ${selectedOrder.address}</p>
+                    </div>
+                    <table>
+                        <tr>
+                            <td><strong>Produk</strong></td>
+                            <td><strong>Qty</strong></td>
+                            <td><strong>Harga</strong></td>
+                            <td><strong>Subtotal</strong></td>
+                        </tr>
+                        ${selectedOrder.items.map(item => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.quantity}</td>
+                                <td>Rp ${item.price.toLocaleString('id-ID')}</td>
+                                <td>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    <p class="total">Total: Rp ${selectedOrder.totalAmount.toLocaleString('id-ID')}</p>
+                </body>
+                </html>
+            `);
+            printWindow.print();
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('orderModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Export orders to CSV function
+        function exportOrdersToCSV() {
+            try {
+                let csv = 'ID,Pelanggan,Email,Telepon,Total,Status,Tanggal\n';
+                dapur_roti_orders.forEach(o => {
+                    csv += `"${o.id}","${o.customer}","${o.email}","${o.phone}",${o.totalAmount},"${o.status}","${o.date}"\n`;
+                });
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `dapur-roti-orders-${new Date().getTime()}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                alert('Gagal mengexport data: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

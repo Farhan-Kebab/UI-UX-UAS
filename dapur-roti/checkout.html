@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Dapur Roti Rumahan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .step-active { @apply text-orange-600 font-bold; }
+        .step-line { @apply h-1 bg-gradient-to-r from-orange-400 to-orange-600; }
+        .form-error { @apply border-red-500; }
+        .input-field { @apply w-full px-4 py-3 border-2 border-orange-200 rounded-lg focus:border-orange-500 focus:outline-none transition; }
+        .card-input { @apply w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition font-mono; }
+    </style>
+</head>
+<body class="bg-amber-50">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Header -->
+        <section class="bg-gradient-to-r from-orange-100 to-orange-50 section-padding">
+            <div class="container-max">
+                <h1 class="text-5xl font-bold text-orange-900 mb-4">Checkout</h1>
+                <p class="text-xl text-orange-700">Selesaikan pembelian Anda</p>
+            </div>
+        </section>
+
+        <!-- Checkout Steps -->
+        <section class="section-padding">
+            <div class="container-max">
+                <!-- Progress Steps -->
+                <div class="mb-12">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="text-center flex-1">
+                            <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 text-white font-bold mb-2 step-active">1</div>
+                            <p class="text-sm font-semibold text-orange-900 step-active">Data Pengiriman</p>
+                        </div>
+                        <div class="flex-1 h-1 bg-orange-200 mx-2"></div>
+                        <div class="text-center flex-1">
+                            <div id="step-2" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-200 text-orange-700 font-bold mb-2">2</div>
+                            <p class="text-sm font-semibold text-orange-700">Pembayaran</p>
+                        </div>
+                        <div class="flex-1 h-1 bg-orange-200 mx-2"></div>
+                        <div class="text-center flex-1">
+                            <div id="step-3" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-200 text-orange-700 font-bold mb-2">3</div>
+                            <p class="text-sm font-semibold text-orange-700">Konfirmasi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Form Section -->
+                    <div class="lg:col-span-2">
+                        <!-- Step 1: Shipping -->
+                        <div id="step-1-form" class="bg-white rounded-lg shadow-lg p-8 mb-6">
+                            <h2 class="text-2xl font-bold text-orange-900 mb-6">Data Pengiriman</h2>
+
+                            <form id="shipping-form" class="space-y-5">
+                                <!-- Full Name -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-orange-900 mb-2">Nama Lengkap*</label>
+                                    <input type="text" id="fullname" placeholder="Contoh: Budi Santoso" 
+                                           class="input-field" required>
+                                    <p class="text-red-500 text-xs mt-1 hidden error-fullname"></p>
+                                </div>
+
+                                <!-- Email -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-orange-900 mb-2">Email*</label>
+                                    <input type="text" id="email" placeholder="nama@email.com" 
+                                           class="input-field" required>
+                                    <p class="text-red-500 text-xs mt-1 hidden error-email"></p>
+                                </div>
+
+                                <!-- Phone -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-orange-900 mb-2">Nomor Telepon*</label>
+                                    <input type="text" id="phone" placeholder="0812 3456 7890 atau +62 812 3456 7890" 
+                                           class="input-field" required>
+                                    <p class="text-red-500 text-xs mt-1 hidden error-phone"></p>
+                                </div>
+
+                                <!-- Address -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-orange-900 mb-2">Alamat Lengkap*</label>
+                                    <textarea id="address" placeholder="Contoh: Jl. Gatot Subroto No.123, Blok A, Kelurahan Menteng, Kecamatan Setia Budi" 
+                                              class="input-field h-24 resize-none" required></textarea>
+                                    <p class="text-red-500 text-xs mt-1 hidden error-address"></p>
+                                </div>
+
+                                <!-- City & Postal Code -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-orange-900 mb-2">Kota*</label>
+                                        <input type="text" id="city" placeholder="Contoh: Jakarta" 
+                                               class="input-field" required>
+                                        <p class="text-red-500 text-xs mt-1 hidden error-city"></p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-orange-900 mb-2">Kode Pos</label>
+                                        <input type="text" id="postal" placeholder="Contoh: 12345" class="input-field">
+                                    </div>
+                                </div>
+
+                                <!-- Notes -->
+                                <div>
+                                    <label class="block text-sm font-semibold text-orange-900 mb-2">Catatan Pengiriman (Opsional)</label>
+                                    <textarea id="notes" placeholder="Contoh: Pesan kanan rumah, jangan di sebelah taman, dll" 
+                                              class="input-field h-20 resize-none"></textarea>
+                                </div>
+
+                                <!-- Next Button -->
+                                <button type="button" onclick="validateAndProceed()" 
+                                        class="w-full btn-primary text-center mt-8">
+                                    Lanjut ke Pembayaran →
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Step 2: Payment -->
+                        <div id="step-2-form" class="bg-white rounded-lg shadow-lg p-8 mb-6 hidden">
+                            <h2 class="text-2xl font-bold text-orange-900 mb-6">Metode Pembayaran</h2>
+
+                            <div class="space-y-4 mb-8">
+                                <!-- Bank Transfer -->
+                                <label class="flex items-center p-4 border-2 border-orange-200 rounded-lg cursor-pointer hover:bg-orange-50 payment-method" data-method="bank">
+                                    <input type="radio" name="payment" value="bank" class="w-4 h-4 text-orange-600">
+                                    <div class="ml-4">
+                                        <p class="font-semibold text-orange-900">💳 Transfer Bank</p>
+                                        <p class="text-sm text-orange-700">BCA, Mandiri, BNI</p>
+                                    </div>
+                                </label>
+
+                                <!-- E-Wallet -->
+                                <label class="flex items-center p-4 border-2 border-orange-200 rounded-lg cursor-pointer hover:bg-orange-50 payment-method" data-method="ewallet">
+                                    <input type="radio" name="payment" value="ewallet" class="w-4 h-4 text-orange-600">
+                                    <div class="ml-4">
+                                        <p class="font-semibold text-orange-900">📱 E-Wallet</p>
+                                        <p class="text-sm text-orange-700">GCash, Dana, OVO, GoPay</p>
+                                    </div>
+                                </label>
+
+                                <!-- COD -->
+                                <label class="flex items-center p-4 border-2 border-orange-200 rounded-lg cursor-pointer hover:bg-orange-50 payment-method" data-method="cod">
+                                    <input type="radio" name="payment" value="cod" class="w-4 h-4 text-orange-600">
+                                    <div class="ml-4">
+                                        <p class="font-semibold text-orange-900">🚚 Bayar di Tempat (COD)</p>
+                                        <p class="text-sm text-orange-700">Bayar ketika barang tiba</p>
+                                    </div>
+                                </label>
+
+                                <!-- Cheque -->
+                                <label class="flex items-center p-4 border-2 border-orange-200 rounded-lg cursor-pointer hover:bg-orange-50 payment-method" data-method="cheque">
+                                    <input type="radio" name="payment" value="cheque" class="w-4 h-4 text-orange-600">
+                                    <div class="ml-4">
+                                        <p class="font-semibold text-orange-900">✍️ Cek/Bilyet Giro</p>
+                                        <p class="text-sm text-orange-700">Untuk pesanan korporat</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Payment Details -->
+                            <div id="payment-details" class="mb-8 p-6 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border-2 border-orange-200 hidden">
+                                <h3 class="font-bold text-orange-900 mb-4">Detail Pembayaran:</h3>
+                                <div id="payment-info" class="space-y-2 text-orange-800">
+                                    <!-- Payment info will be inserted here -->
+                                </div>
+                                <p class="text-xs text-orange-700 mt-4">Silakan transfer sesuai nominal dan jumlah di atas. Pastikan amount tepat untuk verifikasi otomatis.</p>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="flex gap-4">
+                                <button type="button" onclick="backToShipping()" 
+                                        class="flex-1 btn-secondary text-center">
+                                    ← Kembali
+                                </button>
+                                <button type="button" onclick="completeCheckout()" 
+                                        class="flex-1 btn-primary text-center">
+                                    Lanjut ke Konfirmasi →
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Confirmation -->
+                        <div id="step-3-form" class="bg-white rounded-lg shadow-lg p-8 hidden">
+                            <h2 class="text-2xl font-bold text-orange-900 mb-6">Konfirmasi Pesanan</h2>
+
+                            <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6">
+                                <p class="text-green-700 text-center text-lg font-semibold">
+                                    ✓ Pesanan Anda berhasil dibuat!
+                                </p>
+                            </div>
+
+                            <div id="order-summary" class="space-y-4 mb-8">
+                                <!-- Order summary will be inserted here -->
+                            </div>
+
+                            <div class="bg-orange-50 border-2 border-orange-200 rounded-lg p-6 mb-8">
+                                <p class="text-orange-900 font-semibold mb-2">📋 Nomor Pesanan Anda:</p>
+                                <p id="order-id" class="text-2xl font-bold text-orange-600 mb-4">-</p>
+                                <p class="text-sm text-orange-700">Simpan nomor pesanan ini untuk tracking.</p>
+                            </div>
+
+                            <div class="space-y-4">
+                                <button onclick="viewOrderHistory()" class="w-full btn-primary text-center">
+                                    📋 Lihat Riwayat Pesanan
+                                </button>
+                                <button onclick="window.location.href='produk.html'" class="w-full btn-secondary text-center">
+                                    ← Lanjut Belanja
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary Sidebar -->
+                    <div>
+                        <div class="card p-6 sticky top-24 bg-gradient-to-br from-orange-50 to-orange-100">
+                            <h3 class="text-2xl font-bold text-orange-900 mb-6">Ringkasan Pesanan</h3>
+
+                            <div id="order-items" class="space-y-3 mb-6 pb-6 border-b-2 border-orange-300">
+                                <!-- Items will be rendered here -->
+                            </div>
+
+                            <div class="space-y-4 mb-6 pb-6 border-b-2 border-orange-300">
+                                <div class="flex justify-between text-orange-900">
+                                    <span>Subtotal</span>
+                                    <span id="subtotal-price">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between text-orange-900">
+                                    <span>Ongkir</span>
+                                    <span id="shipping-price">Rp 20.000</span>
+                                </div>
+                                <div class="flex justify-between text-orange-900">
+                                    <span>Pajak (10%)</span>
+                                    <span id="tax-price">Rp 0</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between text-2xl font-bold text-orange-900 mb-6">
+                                <span>Total</span>
+                                <span id="total-price">Rp 20.000</span>
+                            </div>
+
+                            <p class="text-xs text-orange-700 text-center">
+                                ✓ Harga sudah termasuk semua biaya
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-orange-900 text-white section-padding">
+        <div class="container-max">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">🥖 Dapur Roti Rumahan</h3>
+                    <p class="text-orange-100">Toko roti UMKM dengan komitmen memberikan kualitas terbaik sejak 2019.</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Menu</h4>
+                    <ul class="space-y-2 text-orange-100">
+                        <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+                        <li><a href="about.html" class="hover:text-white transition">About</a></li>
+                        <li><a href="produk.html" class="hover:text-white transition">Produk</a></li>
+                        <li><a href="keranjang.html" class="hover:text-white transition">Keranjang</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Hubungi Kami</h4>
+                    <ul class="space-y-2 text-orange-100">
+                        <li>📱 +62 812 3456 7890</li>
+                        <li>📧 info@dapurroti.com</li>
+                        <li>📍 Jakarta, Indonesia</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-orange-800 pt-8 text-center text-orange-100">
+                <p>&copy; 2024 Dapur Roti Rumahan. Semua hak dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/checkout.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkout - Debug</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-amber-50 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-orange-900 mb-6">🧪 Test Checkout System</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+            <!-- Test 1: Add to Cart -->
+            <div>
+                <h2 class="text-xl font-bold text-orange-900 mb-3">1. Test Cart</h2>
+                <button onclick="testAddToCart()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    ✅ Add Product to Cart
+                </button>
+                <div id="test1-result" class="mt-2 text-sm text-gray-700"></div>
+            </div>
+
+            <!-- Test 2: Check LocalStorage -->
+            <div>
+                <h2 class="text-xl font-bold text-orange-900 mb-3">2. Check LocalStorage</h2>
+                <button onclick="testCheckStorage()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    📦 Check Storage
+                </button>
+                <pre id="test2-result" class="mt-2 bg-gray-100 p-4 rounded text-xs overflow-auto max-h-60"></pre>
+            </div>
+
+            <!-- Test 3: Go to Checkout -->
+            <div>
+                <h2 class="text-xl font-bold text-orange-900 mb-3">3. Go to Checkout</h2>
+                <button onclick="goToCheckout()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                    🛒 Go to Checkout Page
+                </button>
+            </div>
+
+            <!-- Test 4: Validate Form -->
+            <div>
+                <h2 class="text-xl font-bold text-orange-900 mb-3">4. Test Validation Functions</h2>
+                <div class="space-y-2">
+                    <input type="text" id="test-email" placeholder="Test Email" class="w-full px-3 py-2 border rounded" value="test@email.com">
+                    <input type="text" id="test-phone" placeholder="Test Phone" class="w-full px-3 py-2 border rounded" value="0812 3456 7890">
+                    <button onclick="testValidation()" class="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600">
+                        ✓ Test Validation
+                    </button>
+                </div>
+                <div id="test4-result" class="mt-2 text-sm text-gray-700"></div>
+            </div>
+
+            <!-- Test 5: View Console -->
+            <div>
+                <h2 class="text-xl font-bold text-orange-900 mb-3">5. Console Logs</h2>
+                <p class="text-sm text-gray-700 mb-2">Tekan F12 untuk buka Developer Console dan lihat logs</p>
+                <button onclick="testConsoleLogs()" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    🔍 Test Console Logs
+                </button>
+            </div>
+
+            <!-- Clear Storage -->
+            <div class="pt-6 border-t">
+                <button onclick="clearAllStorage()" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    🗑 Clear All Storage (Fresh Start)
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+            <h3 class="font-bold text-blue-900 mb-2">📋 Instruksi:</h3>
+            <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                <li>Klik "Add Product to Cart" untuk add sample produk</li>
+                <li>Klik "Check Storage" untuk lihat data di localStorage</li>
+                <li>Klik "Go to Checkout Page" untuk ke halaman checkout</li>
+                <li>Di checkout, isi form dengan data berikut:</li>
+                <ul class="ml-8 mt-2 space-y-1 text-blue-800">
+                    <li>✓ Nama: Budi Santoso (atau nama apapun)</li>
+                    <li>✓ Email: test@email.com</li>
+                    <li>✓ Telepon: 0812 3456 7890</li>
+                    <li>✓ Alamat: Jl. Gatot Subroto No.123</li>
+                    <li>✓ Kota: Jakarta</li>
+                </ul>
+                <li>Tekan F12 buka Developer Console untuk lihat logs</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        function testAddToCart() {
+            const productId = 1;
+            const name = 'Roti Tawar Premium';
+            const price = 35000;
+            const image = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop';
+            
+            console.log('Test: Adding product to cart...');
+            addToCart(productId, name, price, image);
+            
+            document.getElementById('test1-result').innerHTML = `
+                <span class="text-green-600">✅ ${name} ditambahkan ke keranjang!</span>
+            `;
+        }
+
+        function testCheckStorage() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const shipping = localStorage.getItem('shippingData');
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            const result = {
+                cart: cart,
+                shippingData: shipping ? JSON.parse(shipping) : null,
+                orders: orders,
+                cartCount: cart.length,
+                orderCount: orders.length
+            };
+            
+            document.getElementById('test2-result').textContent = JSON.stringify(result, null, 2);
+        }
+
+        function testValidation() {
+            const email = document.getElementById('test-email').value;
+            const phone = document.getElementById('test-phone').value;
+            
+            const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const isValidPhone = /^(\+62|0)[0-9]{8,13}$/.test(phone.replace(/[\s\-()]/g, ''));
+            
+            console.log('Email:', email, 'Valid:', isValidEmail);
+            console.log('Phone:', phone, 'Valid:', isValidPhone);
+            
+            document.getElementById('test4-result').innerHTML = `
+                <p>Email: <strong>${email}</strong> → <span class="${isValidEmail ? 'text-green-600' : 'text-red-600'}">
+                    ${isValidEmail ? '✅ Valid' : '❌ Invalid'}</span></p>
+                <p>Phone: <strong>${phone}</strong> → <span class="${isValidPhone ? 'text-green-600' : 'text-red-600'}">
+                    ${isValidPhone ? '✅ Valid' : '❌ Invalid'}</span></p>
+            `;
+        }
+
+        function testConsoleLogs() {
+            console.clear();
+            console.log('🧪 Test Console Logs Started');
+            console.log('Cart:', getCart());
+            console.log('Functions available:');
+            console.log('- validateAndProceed()');
+            console.log('- addToCart()');
+            console.log('- getCart()');
+            console.log('- saveCart()');
+            console.log('Open checkout.html dan inspect form untuk debug');
+            console.log('✅ Check console untuk lebih banyak info');
+        }
+
+        function goToCheckout() {
+            // Make sure ada item di cart
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('⚠ Keranjang kosong! Klik "Add Product to Cart" dulu');
+                testAddToCart();
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
+
+        function clearAllStorage() {
+            if (confirm('Yakin ingin hapus semua data localStorage?')) {
+                localStorage.clear();
+                alert('✅ localStorage dibersihkan');
+                location.reload();
+            }
+        }
+
+        // Load navbar
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 Test Page Loaded');
+            testCheckStorage();
+        });
+    </script>
+</body>
+</html>

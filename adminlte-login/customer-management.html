@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Pelanggan - AdminLTE Dapur Roti</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/adminlte-custom.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
+            min-height: 100vh;
+            position: fixed;
+            width: 250px;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .navbar-custom {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 20px;
+        }
+
+        .customer-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .customer-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .customer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(17, 153, 142, 0.1);
+            color: #11998e;
+        }
+
+        .badge-inactive {
+            background: rgba(200, 200, 200, 0.2);
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <h5 style="margin: 0; font-weight: 700;">🥖 AdminLTE</h5>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Dapur Roti Panel</p>
+        </div>
+        <ul style="list-style: none; padding: 15px 0; margin: 0;">
+            <li style="margin: 5px 0;">
+                <a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-speedometer2" style="margin-right: 10px;"></i> Dashboard
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="produk-management.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-box" style="margin-right: 10px;"></i> Kelola Produk
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="order-management.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: flex; align-items: center; padding: 12px 20px; transition: all 0.3s;">
+                    <i class="bi bi-clipboard-check" style="margin-right: 10px;"></i> Kelola Pesanan
+                </a>
+            </li>
+            <li style="margin: 5px 0;">
+                <a href="customer-management.html" style="color: white; text-decoration: none; display: flex; align-items: center; padding: 12px 20px; background: rgba(102, 126, 234, 0.2); border-left: 3px solid #667eea; transition: all 0.3s;">
+                    <i class="bi bi-people" style="margin-right: 10px;"></i> Kelola Pelanggan
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar-custom d-flex justify-content-between align-items-center">
+            <h2 style="margin: 0; color: #2c3e50; font-weight: 600;">👥 Kelola Pelanggan</h2>
+            <button id="logoutBtn" onclick="logout()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Logout
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="color: #999; font-size: 12px; font-weight: 600; margin-bottom: 10px;">Total Pelanggan</div>
+                <div style="font-size: 28px; font-weight: 700; color: #667eea;" id="totalCustomers">0</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #11998e; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="color: #999; font-size: 12px; font-weight: 600; margin-bottom: 10px;">Pelanggan Aktif</div>
+                <div style="font-size: 28px; font-weight: 700; color: #11998e;" id="activeCustomers">0</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f93b1d; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="color: #999; font-size: 12px; font-weight: 600; margin-bottom: 10px;">Total Belanja</div>
+                <div style="font-size: 28px; font-weight: 700; color: #f93b1d;" id="totalRevenue">Rp 0</div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 25px;">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Cari pelanggan berdasarkan nama atau email..." 
+                style="width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px;"
+                onkeyup="searchCustomers(this.value)"
+            >
+        </div>
+
+        <!-- Customers Grid -->
+        <div id="customers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+            <!-- Customers will load here -->
+        </div>
+    </div>
+
+    <!-- Customer Detail Modal -->
+    <div id="customerModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 8px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="customerModalTitle" style="margin: 0; color: #2c3e50; font-weight: 600;">Detail Pelanggan</h3>
+                <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">×</button>
+            </div>
+
+            <div id="customerModalContent">
+                <!-- Customer details will load here -->
+            </div>
+
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button onclick="closeModal()" style="flex: 1; background: #e9ecef; color: #2c3e50; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dapur-roti-data.js"></script>
+    <script>
+        let allCustomers = [];
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            const user = sessionStorage.getItem('loggedInUser');
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+            loadCustomers();
+        });
+
+        // Load and display customers
+        function loadCustomers() {
+            allCustomers = dapur_roti_customers || [];
+            renderCustomers(allCustomers);
+            updateStats();
+        }
+
+        // Render customers in grid
+        function renderCustomers(customers) {
+            const grid = document.getElementById('customers-grid');
+            grid.innerHTML = '';
+
+            if (customers.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">Tidak ada pelanggan</div>';
+                return;
+            }
+
+            customers.forEach(customer => {
+                const initials = customer.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const card = document.createElement('div');
+                card.className = 'customer-card';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 15px; flex: 1;">
+                            <div class="customer-avatar">${initials}</div>
+                            <div style="flex: 1;">
+                                <h5 style="margin: 0 0 5px 0; color: #2c3e50; font-weight: 600;">${customer.name}</h5>
+                                <p style="margin: 0 0 5px 0; color: #999; font-size: 12px;">📧 ${customer.email}</p>
+                                <p style="margin: 0; color: #999; font-size: 12px;">📱 ${customer.phone}</p>
+                            </div>
+                        </div>
+                        <span class="badge-status ${customer.status === 'active' ? 'badge-active' : 'badge-inactive'}">${customer.status === 'active' ? 'Aktif' : 'Nonaktif'}</span>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <div style="color: #999; font-size: 11px; font-weight: 600; margin-bottom: 3px;">Pesanan</div>
+                                <div style="color: #2c3e50; font-weight: 700; font-size: 16px;">${customer.totalOrders}</div>
+                            </div>
+                            <div>
+                                <div style="color: #999; font-size: 11px; font-weight: 600; margin-bottom: 3px;">Total Belanja</div>
+                                <div style="color: #667eea; font-weight: 700; font-size: 14px;">Rp ${(customer.totalSpent / 1000000).toFixed(1)}jt</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="color: #999; font-size: 12px; margin-bottom: 15px;">
+                        📍 ${customer.city} | 📅 ${new Date(customer.joinDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'short' })}
+                    </div>
+
+                    <button onclick="viewCustomer('${customer.id}')" style="width: 100%; background: #667eea; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Lihat Detail
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // View customer details
+        function viewCustomer(customerId) {
+            const customer = dapur_roti_customers.find(c => c.id === customerId);
+            if (!customer) return;
+
+            const initials = customer.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            const joinDateFormatted = new Date(customer.joinDate).toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            document.getElementById('customerModalTitle').textContent = `Detail Pelanggan - ${customer.name}`;
+            document.getElementById('customerModalContent').innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div class="customer-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
+                        ${initials}
+                    </div>
+                    <h4 style="margin: 0 0 5px 0; color: #2c3e50; font-weight: 600;">${customer.name}</h4>
+                    <span class="badge-status ${customer.status === 'active' ? 'badge-active' : 'badge-inactive'}">${customer.status === 'active' ? 'Aktif' : 'Nonaktif'}</span>
+                </div>
+
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <div style="color: #999; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Total Pesanan</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #667eea;">${customer.totalOrders}</div>
+                        </div>
+                        <div>
+                            <div style="color: #999; font-size: 12px; font-weight: 600; margin-bottom: 5px;">Total Belanja</div>
+                            <div style="font-size: 24px; font-weight: 700; color: #11998e;">Rp ${customer.totalSpent.toLocaleString('id-ID')}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h5 style="color: #2c3e50; font-weight: 600; margin-bottom: 15px;">Informasi Kontak</h5>
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #999; font-size: 12px; margin-bottom: 3px;">Email</div>
+                        <div style="color: #2c3e50; font-weight: 500;">${customer.email}</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #999; font-size: 12px; margin-bottom: 3px;">Telepon</div>
+                        <div style="color: #2c3e50; font-weight: 500;">${customer.phone}</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #999; font-size: 12px; margin-bottom: 3px;">Alamat</div>
+                        <div style="color: #2c3e50; font-weight: 500;">${customer.address}</div>
+                    </div>
+                    <div>
+                        <div style="color: #999; font-size: 12px; margin-bottom: 3px;">Kota</div>
+                        <div style="color: #2c3e50; font-weight: 500;">${customer.city}</div>
+                    </div>
+                </div>
+
+                <div style="background: #e8f5e9; padding: 12px; border-radius: 6px; border-left: 4px solid #11998e;">
+                    <div style="color: #999; font-size: 12px; margin-bottom: 3px;">Bergabung Sejak</div>
+                    <div style="color: #11998e; font-weight: 600;">${joinDateFormatted}</div>
+                </div>
+            `;
+
+            const modal = document.getElementById('customerModal');
+            modal.style.display = 'flex';
+        }
+
+        // Search customers
+        function searchCustomers(query) {
+            if (!query.trim()) {
+                renderCustomers(allCustomers);
+                return;
+            }
+
+            const filtered = allCustomers.filter(c =>
+                c.name.toLowerCase().includes(query.toLowerCase()) ||
+                c.email.toLowerCase().includes(query.toLowerCase())
+            );
+            renderCustomers(filtered);
+        }
+
+        // Update stats
+        function updateStats() {
+            const stats = getDapurRotiStats ? getDapurRotiStats() : {};
+            document.getElementById('totalCustomers').textContent = dapur_roti_customers.length;
+            document.getElementById('activeCustomers').textContent = dapur_roti_customers.filter(c => c.status === 'active').length;
+
+            const totalSpent = dapur_roti_customers.reduce((sum, c) => sum + c.totalSpent, 0);
+            document.getElementById('totalRevenue').textContent = 'Rp ' + totalSpent.toLocaleString('id-ID');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('customerModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('customerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+/* ===== GLOBAL STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFFBEB;
+    color: #1C1917;
+}
+
+/* ===== ACTIVE LINK ===== */
+.active-link {
+    color: #EA580C !important;
+    border-bottom: 2px solid #EA580C;
+    padding-bottom: 2px;
+}
+
+/* ===== BUTTON STYLES ===== */
+.btn-primary {
+    @apply px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-medium;
+}
+
+.btn-secondary {
+    @apply px-6 py-3 bg-white text-orange-600 border-2 border-orange-600 rounded-lg hover:bg-orange-50 transition font-medium;
+}
+
+.btn-sm {
+    @apply px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-medium;
+}
+
+/* ===== CARD STYLES ===== */
+.card {
+    @apply bg-white rounded-lg shadow-md hover:shadow-xl transition border border-orange-100;
+}
+
+.product-card {
+    @apply card overflow-hidden hover:scale-105 transition;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slideIn {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+/* ===== SECTION PADDING ===== */
+.section-padding {
+    @apply py-12 md:py-20;
+}
+
+/* ===== CONTAINER ===== */
+.container-max {
+    @apply max-w-full mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+    @apply bg-gradient-to-r from-orange-50 to-orange-100 section-padding relative overflow-hidden;
+}
+
+/* ===== FEATURES SECTION ===== */
+.section-padding {
+    @apply py-12 md:py-20;
+}
+
+.section-padding h2,
+.section-padding > div {
+    position: relative;
+    z-index: 10;
+}
+
+/* ===== INPUT FIELDS ===== */
+input, textarea, select {
+    @apply border-2 border-orange-200 rounded-lg px-4 py-2 focus:outline-none focus:border-orange-600 focus:bg-orange-50 transition;
+}
+
+/* ===== GRID LAYOUTS ===== */
+.grid-cols-auto {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .grid-cols-auto {
+        grid-template-columns: 1fr;
+    }
+
+    .section-padding {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #FFFBEB;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #EA580C;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #D87C22;
+}
+
+/* ===== TEXT UTILITIES ===== */
+.text-gradient {
+    background: linear-gradient(135deg, #EA580C 0%, #D87C22 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== BADGE ===== */
+.badge {
+    @apply inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium;
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+    @apply h-1 bg-gradient-to-r from-orange-200 to-orange-600 rounded;
+}

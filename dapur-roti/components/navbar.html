@@ -1,0 +1,70 @@
+<nav class="sticky top-0 z-50 bg-orange-50 shadow-lg border-b-2 border-orange-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">🥖</span>
+                <div>
+                    <h1 class="text-xl font-bold text-orange-900">Dapur Roti</h1>
+                    <p class="text-xs text-orange-700">Rumahan</p>
+                </div>
+            </div>
+
+            <!-- Menu Besar (Desktop) -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="nav-link text-orange-900 hover:text-orange-600 font-medium transition">
+                    Home
+                </a>
+                <a href="about.html" class="nav-link text-orange-900 hover:text-orange-600 font-medium transition">
+                    About
+                </a>
+                <a href="produk.html" class="nav-link text-orange-900 hover:text-orange-600 font-medium transition">
+                    Produk
+                </a>
+                <a href="keranjang.html" class="relative nav-link text-orange-900 hover:text-orange-600 font-medium transition">
+                    <span>🛒 Keranjang</span>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                </a>
+            </div>
+
+            <!-- Buttons (Desktop) -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="login.html" class="btn-login px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-medium">
+                    Login
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center space-x-4">
+                <button id="mobile-cart-btn" class="relative text-orange-900 text-xl">
+                    🛒
+                    <span id="mobile-cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center hidden">0</span>
+                </button>
+                <button id="mobile-menu-btn" class="text-orange-900 text-2xl">
+                    ☰
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-orange-200">
+            <a href="index.html" class="mobile-nav-link block py-2 px-4 text-orange-900 hover:bg-orange-100 rounded font-medium transition">
+                Home
+            </a>
+            <a href="about.html" class="mobile-nav-link block py-2 px-4 text-orange-900 hover:bg-orange-100 rounded font-medium transition">
+                About
+            </a>
+            <a href="produk.html" class="mobile-nav-link block py-2 px-4 text-orange-900 hover:bg-orange-100 rounded font-medium transition">
+                Produk
+            </a>
+            <a href="keranjang.html" class="mobile-nav-link block py-2 px-4 text-orange-900 hover:bg-orange-100 rounded font-medium transition">
+                🛒 Keranjang
+            </a>
+            <div class="py-2 px-4 border-t border-orange-200 mt-2">
+                <a href="login.html" class="btn-login block text-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-medium">
+                    Login
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
