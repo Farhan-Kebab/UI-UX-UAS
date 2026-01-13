@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Pesanan - Dapur Roti Rumahan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-amber-50">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Header Section -->
+        <section class="bg-gradient-to-r from-orange-100 to-orange-50 section-padding">
+            <div class="container-max">
+                <h1 class="text-5xl font-bold text-orange-900 mb-4">Riwayat Pesanan</h1>
+                <p class="text-xl text-orange-700">Cek status dan detail pesanan Anda</p>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section class="section-padding">
+            <div class="container-max">
+                <!-- Filter Tabs -->
+                <div class="flex gap-3 mb-8 flex-wrap">
+                    <button onclick="filterOrders('all')" class="filter-tab active px-6 py-2 rounded-full font-semibold bg-orange-600 text-white" data-filter="all">
+                        Semua Pesanan
+                    </button>
+                    <button onclick="filterOrders('pending')" class="filter-tab px-6 py-2 rounded-full font-semibold bg-orange-100 text-orange-700 hover:bg-orange-200 transition" data-filter="pending">
+                        ⏳ Menunggu
+                    </button>
+                    <button onclick="filterOrders('confirmed')" class="filter-tab px-6 py-2 rounded-full font-semibold bg-orange-100 text-orange-700 hover:bg-orange-200 transition" data-filter="confirmed">
+                        ✓ Dikonfirmasi
+                    </button>
+                    <button onclick="filterOrders('shipped')" class="filter-tab px-6 py-2 rounded-full font-semibold bg-orange-100 text-orange-700 hover:bg-orange-200 transition" data-filter="shipped">
+                        🚚 Dikirim
+                    </button>
+                    <button onclick="filterOrders('completed')" class="filter-tab px-6 py-2 rounded-full font-semibold bg-orange-100 text-orange-700 hover:bg-orange-200 transition" data-filter="completed">
+                        ✅ Selesai
+                    </button>
+                </div>
+
+                <!-- Orders List -->
+                <div id="orders-list" class="space-y-6">
+                    <!-- Orders will be rendered here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="text-center py-12 hidden">
+                    <p class="text-5xl mb-4">📭</p>
+                    <h3 class="text-2xl font-bold text-orange-900 mb-2">Belum Ada Pesanan</h3>
+                    <p class="text-orange-700 mb-6">Mulai berbelanja sekarang dan pesan produk favorit Anda</p>
+                    <a href="produk.html" class="inline-block btn-primary">
+                        🛍 Belanja Sekarang
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div id="order-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-orange-900">Detail Pesanan</h2>
+                <button onclick="closeModal()" class="text-3xl text-gray-400 hover:text-gray-600">×</button>
+            </div>
+            <div id="modal-content">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-orange-900 text-white section-padding">
+        <div class="container-max">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">🥖 Dapur Roti Rumahan</h3>
+                    <p class="text-orange-100">Toko roti UMKM dengan komitmen memberikan kualitas terbaik sejak 2019.</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Menu</h4>
+                    <ul class="space-y-2 text-orange-100">
+                        <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+                        <li><a href="about.html" class="hover:text-white transition">About</a></li>
+                        <li><a href="produk.html" class="hover:text-white transition">Produk</a></li>
+                        <li><a href="keranjang.html" class="hover:text-white transition">Keranjang</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Hubungi Kami</h4>
+                    <ul class="space-y-2 text-orange-100">
+                        <li>📱 +62 812 3456 7890</li>
+                        <li>📧 info@dapurroti.com</li>
+                        <li>📍 Jakarta, Indonesia</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-orange-800 pt-8 text-center text-orange-100">
+                <p>&copy; 2024 Dapur Roti Rumahan. Semua hak dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/order-history.js"></script>
+</body>
+</html>

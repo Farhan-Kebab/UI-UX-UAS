@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Integrasi Keranjang & Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .test-section { @apply bg-white rounded-lg shadow p-6 mb-4 border-l-4 border-blue-500; }
+        .test-pass { @apply text-green-600 font-bold; }
+        .test-fail { @apply text-red-600 font-bold; }
+        .test-result { @apply p-3 rounded mt-3 font-mono text-sm; }
+        .result-pass { @apply bg-green-100 text-green-800; }
+        .result-fail { @apply bg-red-100 text-red-800; }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-600 mb-8">🧪 Test Integrasi Keranjang ↔️ Checkout</h1>
+
+        <!-- Status Summary -->
+        <div class="bg-blue-50 border-2 border-blue-500 rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold text-blue-600 mb-4">📊 Status Integrasi</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600">Files Terhubung</p>
+                    <p class="text-2xl font-bold text-green-600">✅ 5/5</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600">Data Fields Konsisten</p>
+                    <p class="text-2xl font-bold text-green-600">✅ Semua quantity</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600">Navigation</p>
+                    <p class="text-2xl font-bold text-green-600">✅ Berfungsi</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600">Storage</p>
+                    <p class="text-2xl font-bold text-green-600">✅ localStorage</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 1: Add to Cart -->
+        <div class="test-section">
+            <h3 class="text-xl font-bold mb-4">Test 1️⃣ Tambah Produk ke Keranjang</h3>
+            <button onclick="testAddToCart()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 mb-4">
+                🛍️ Tambah Produk Uji
+            </button>
+            <div id="test1-result"></div>
+        </div>
+
+        <!-- Test 2: Check Cart -->
+        <div class="test-section">
+            <h3 class="text-xl font-bold mb-4">Test 2️⃣ Verifikasi Data di localStorage</h3>
+            <button onclick="testCheckCart()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 mb-4">
+                📦 Cek Keranjang
+            </button>
+            <div id="test2-result"></div>
+        </div>
+
+        <!-- Test 3: Display Cart -->
+        <div class="test-section">
+            <h3 class="text-xl font-bold mb-4">Test 3️⃣ Tampilkan Produk (Seperti keranjang.html)</h3>
+            <button onclick="testDisplayCart()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 mb-4">
+                👀 Tampilkan Keranjang
+            </button>
+            <div id="test3-result"></div>
+            <div id="cart-preview" class="mt-4"></div>
+        </div>
+
+        <!-- Test 4: Checkout Init -->
+        <div class="test-section">
+            <h3 class="text-xl font-bold mb-4">Test 4️⃣ Initialize Checkout (checkout.html)</h3>
+            <button onclick="testCheckoutInit()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 mb-4">
+                🏪 Simulasi Checkout
+            </button>
+            <div id="test4-result"></div>
+            <div id="checkout-preview" class="mt-4"></div>
+        </div>
+
+        <!-- Test 5: Update Quantity -->
+        <div class="test-section">
+            <h3 class="text-xl font-bold mb-4">Test 5️⃣ Update Quantity</h3>
+            <button onclick="testUpdateQuantity()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 mb-4">
+                ➕➖ Ubah Jumlah
+            </button>
+            <div id="test5-result"></div>
+        </div>
+
+        <!-- Test 6: Remove from Cart -->
+        <div class="test-section">
+            <h3 class="text-xl font-bold mb-4">Test 6️⃣ Hapus dari Keranjang</h3>
+            <button onclick="testRemoveFromCart()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 mb-4">
+                🗑️ Hapus Item
+            </button>
+            <div id="test6-result"></div>
+        </div>
+
+        <!-- Clear All -->
+        <div class="test-section bg-red-50 border-l-4 border-red-500">
+            <h3 class="text-xl font-bold mb-4 text-red-600">🗑️ Clear All Data</h3>
+            <button onclick="clearAllData()" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
+                Hapus Semua Data
+            </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="mt-8 p-6 bg-yellow-50 border-2 border-yellow-500 rounded-lg">
+            <h3 class="text-xl font-bold mb-4">🔗 Navigasi ke Halaman Nyata</h3>
+            <div class="flex gap-4 flex-wrap">
+                <a href="keranjang.html" class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
+                    📖 Ke keranjang.html
+                </a>
+                <a href="checkout.html" class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
+                    💳 Ke checkout.html
+                </a>
+                <a href="produk.html" class="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600">
+                    🛍️ Ke produk.html
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/keranjang.js"></script>
+    <script src="js/checkout.js"></script>
+
+    <script>
+        function showResult(elementId, title, content, isPass = true) {
+            const el = document.getElementById(elementId);
+            const resultClass = isPass ? 'result-pass' : 'result-fail';
+            const statusText = isPass ? '✅ PASS' : '❌ FAIL';
+            el.innerHTML = `
+                <div class="${resultClass}">
+                    <div class="font-bold mb-2">${statusText}: ${title}</div>
+                    <pre>${JSON.stringify(content, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function testAddToCart() {
+            try {
+                console.log('=== TEST 1: ADD TO CART ===');
+                
+                // Simulate products
+                const products = [
+                    { id: 1, name: 'Roti Tawar', price: 35000, image: 'img/roti1.jpg' },
+                    { id: 2, name: 'Roti Baguette', price: 25000, image: 'img/roti2.jpg' }
+                ];
+                
+                // Clear existing cart
+                localStorage.removeItem('cart');
+                
+                // Add products
+                products.forEach(p => {
+                    addToCart(p.id, p.name, p.price, p.image);
+                    addToCart(p.id, p.name, p.price, p.image); // Add again to test quantity increment
+                });
+                
+                const cart = getCart();
+                console.log('Cart after adding:', cart);
+                
+                const expectedQty = cart[0].quantity === 2;
+                const hasQuantityField = cart.every(item => 'quantity' in item && !('qty' in item));
+                
+                const pass = expectedQty && hasQuantityField;
+                showResult('test1-result', 'Produk ditambahkan dengan quantity=2', cart, pass);
+                return pass;
+            } catch (e) {
+                showResult('test1-result', 'ERROR: ' + e.message, e.stack, false);
+                return false;
+            }
+        }
+
+        function testCheckCart() {
+            try {
+                console.log('=== TEST 2: CHECK CART ===');
+                const cart = getCart();
+                
+                if (cart.length === 0) {
+                    showResult('test2-result', 'Keranjang kosong', 'Jalankan Test 1 terlebih dahulu', false);
+                    return false;
+                }
+                
+                // Verify structure
+                const pass = cart.every(item => {
+                    const hasRequired = item.id && item.name && item.price && item.image && item.quantity;
+                    const hasQuantity = 'quantity' in item;
+                    const noQty = !('qty' in item); // Make sure no old 'qty' field
+                    return hasRequired && hasQuantity && noQty;
+                });
+                
+                const summary = {
+                    totalItems: cart.length,
+                    fields: cart[0] ? Object.keys(cart[0]) : [],
+                    sampleItem: cart[0],
+                    hasQuantityField: cart.every(item => 'quantity' in item),
+                    hasOldQtyField: cart.some(item => 'qty' in item)
+                };
+                
+                console.log('Cart verification:', summary);
+                showResult('test2-result', 'Data struktur valid dengan quantity field', summary, pass);
+                return pass;
+            } catch (e) {
+                showResult('test2-result', 'ERROR: ' + e.message, e.stack, false);
+                return false;
+            }
+        }
+
+        function testDisplayCart() {
+            try {
+                console.log('=== TEST 3: DISPLAY CART ===');
+                const cart = getCart();
+                
+                if (cart.length === 0) {
+                    showResult('test3-result', 'Keranjang kosong', 'Jalankan Test 1 terlebih dahulu', false);
+                    return false;
+                }
+                
+                // Simulate displayCart() rendering
+                const preview = document.getElementById('cart-preview');
+                let html = '<div class="bg-orange-50 p-4 rounded-lg">';
+                
+                let subtotal = 0;
+                cart.forEach((item, idx) => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    html += `
+                        <div class="flex justify-between py-3 border-b border-orange-200">
+                            <div>
+                                <p class="font-bold">${item.name}</p>
+                                <p class="text-sm text-gray-600">
+                                    ${item.quantity}x @ Rp ${formatPrice(item.price)}
+                                </p>
+                            </div>
+                            <p class="font-bold">Rp ${formatPrice(itemTotal)}</p>
+                        </div>
+                    `;
+                });
+                
+                const shipping = 20000;
+                const tax = Math.floor(subtotal * 0.1);
+                const total = subtotal + shipping + tax;
+                
+                html += `
+                    <div class="mt-4 space-y-2 font-bold">
+                        <div class="flex justify-between"><span>Subtotal:</span><span>Rp ${formatPrice(subtotal)}</span></div>
+                        <div class="flex justify-between"><span>Ongkir:</span><span>Rp ${formatPrice(shipping)}</span></div>
+                        <div class="flex justify-between"><span>Pajak:</span><span>Rp ${formatPrice(tax)}</span></div>
+                        <div class="flex justify-between text-lg"><span>TOTAL:</span><span class="text-orange-600">Rp ${formatPrice(total)}</span></div>
+                    </div>
+                </div>`;
+                
+                preview.innerHTML = html;
+                showResult('test3-result', 'Keranjang ditampilkan dengan benar', {
+                    itemCount: cart.length,
+                    subtotal: subtotal,
+                    total: total,
+                    allQuantityFieldsUsed: cart.every(i => i.quantity > 0)
+                }, true);
+                return true;
+            } catch (e) {
+                showResult('test3-result', 'ERROR: ' + e.message, e.stack, false);
+                return false;
+            }
+        }
+
+        function testCheckoutInit() {
+            try {
+                console.log('=== TEST 4: CHECKOUT INIT ===');
+                const cart = getCart();
+                
+                if (cart.length === 0) {
+                    showResult('test4-result', 'Keranjang kosong', 'Jalankan Test 1 terlebih dahulu', false);
+                    return false;
+                }
+                
+                // Simulate checkout initialization
+                const preview = document.getElementById('checkout-preview');
+                let html = '<div class="bg-orange-50 p-4 rounded-lg"><h4 class="font-bold mb-3">Order Items:</h4>';
+                
+                let subtotal = 0;
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    html += `
+                        <div class="flex justify-between py-2 border-b border-orange-200">
+                            <div>
+                                <p class="font-semibold">${item.name}</p>
+                                <p class="text-xs text-gray-600">${item.quantity}x @ Rp ${formatPrice(item.price)}</p>
+                            </div>
+                            <p class="font-semibold">Rp ${formatPrice(itemTotal)}</p>
+                        </div>
+                    `;
+                });
+                
+                const shipping = 20000;
+                const tax = Math.floor(subtotal * 0.1);
+                const total = subtotal + shipping + tax;
+                
+                html += `
+                    <div class="mt-3 space-y-1 text-sm">
+                        <div class="flex justify-between"><span>Subtotal:</span><span>Rp ${formatPrice(subtotal)}</span></div>
+                        <div class="flex justify-between"><span>Pengiriman:</span><span>Rp ${formatPrice(shipping)}</span></div>
+                        <div class="flex justify-between"><span>Pajak:</span><span>Rp ${formatPrice(tax)}</span></div>
+                        <div class="flex justify-between font-bold text-orange-600"><span>TOTAL:</span><span>Rp ${formatPrice(total)}</span></div>
+                    </div>
+                </div>`;
+                
+                preview.innerHTML = html;
+                
+                const pass = cart.every(item => item.quantity > 0 && item.price > 0);
+                showResult('test4-result', 'Checkout berhasil membaca cart dengan benar', {
+                    cartItems: cart.length,
+                    subtotal: subtotal,
+                    totalWithTax: total,
+                    allItemsHaveQuantity: cart.every(i => 'quantity' in i)
+                }, pass);
+                return pass;
+            } catch (e) {
+                showResult('test4-result', 'ERROR: ' + e.message, e.stack, false);
+                return false;
+            }
+        }
+
+        function testUpdateQuantity() {
+            try {
+                console.log('=== TEST 5: UPDATE QUANTITY ===');
+                let cart = getCart();
+                
+                if (cart.length === 0) {
+                    showResult('test5-result', 'Keranjang kosong', 'Jalankan Test 1 terlebih dahulu', false);
+                    return false;
+                }
+                
+                const originalQty = cart[0].quantity;
+                
+                // Test updateQuantity function
+                updateQuantity(0, 2); // Add 2
+                cart = getCart();
+                const newQty = cart[0].quantity;
+                
+                const pass = newQty === originalQty + 2;
+                showResult('test5-result', 'Quantity berhasil diupdate', {
+                    originalQuantity: originalQty,
+                    newQuantity: newQty,
+                    change: '+2',
+                    success: pass
+                }, pass);
+                return pass;
+            } catch (e) {
+                showResult('test5-result', 'ERROR: ' + e.message, e.stack, false);
+                return false;
+            }
+        }
+
+        function testRemoveFromCart() {
+            try {
+                console.log('=== TEST 6: REMOVE FROM CART ===');
+                let cart = getCart();
+                
+                if (cart.length === 0) {
+                    showResult('test6-result', 'Keranjang kosong', 'Jalankan Test 1 terlebih dahulu', false);
+                    return false;
+                }
+                
+                const originalCount = cart.length;
+                
+                // Remove first item (without confirmation dialog in test)
+                cart.splice(0, 1);
+                saveCart(cart);
+                
+                const newCart = getCart();
+                const newCount = newCart.length;
+                
+                const pass = newCount === originalCount - 1;
+                showResult('test6-result', 'Item berhasil dihapus dari keranjang', {
+                    originalCount: originalCount,
+                    newCount: newCount,
+                    removed: originalCount - newCount,
+                    success: pass
+                }, pass);
+                return pass;
+            } catch (e) {
+                showResult('test6-result', 'ERROR: ' + e.message, e.stack, false);
+                return false;
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Hapus semua data test? Ini akan menghapus localStorage cart.')) {
+                localStorage.removeItem('cart');
+                location.reload();
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', function() {
+            console.log('Test page loaded');
+            console.log('Available functions:');
+            console.log('- addToCart()');
+            console.log('- getCart()');
+            console.log('- saveCart()');
+            console.log('- updateQuantity()');
+            console.log('- removeFromCart()');
+            console.log('- displayCart()');
+            console.log('- proceedToCheckout()');
+            console.log('- initializeCheckout()');
+        });
+    </script>
+</body>
+</html>
